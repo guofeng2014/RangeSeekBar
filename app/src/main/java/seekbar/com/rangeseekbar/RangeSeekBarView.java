@@ -215,11 +215,12 @@ public class RangeSeekBarView extends View {
         //计算选中SeekBar颜色
         greenRect.left = seekBarPadding + startIndex * getItemWidth();
         greenRect.right = getWidth() - seekBarPadding - (data.size() - 1 - endIndex) * getItemWidth();
-        //绘制底部游标
-        canvas.drawBitmap(startCurseBitmap, seekBarPadding - startCurseBitmap.getWidth() / 2 + startIndex * getItemWidth(), titleDescHeight + seekBarHeight + seekBarTopPadding + seekBarBottomPadding, null);
-        canvas.drawBitmap(endCurseBitmap, seekBarPadding + endIndex * getItemWidth() - startCurseBitmap.getWidth() / 2, titleDescHeight + seekBarHeight + seekBarTopPadding + seekBarBottomPadding, null);
+
         //后操作的在上面
         if (touchCursor == TOUCH_START_CURSOR) {
+            //绘制底部游标
+            canvas.drawBitmap(endCurseBitmap, seekBarPadding + endIndex * getItemWidth() - startCurseBitmap.getWidth() / 2, titleDescHeight + seekBarHeight + seekBarTopPadding + seekBarBottomPadding, null);
+            canvas.drawBitmap(startCurseBitmap, seekBarPadding - startCurseBitmap.getWidth() / 2 + startIndex * getItemWidth(), titleDescHeight + seekBarHeight + seekBarTopPadding + seekBarBottomPadding, null);
             //绘制结束描述
             getNinePath(endTitleRect, endTitleBitmap, endIndex).draw(canvas, endTitleRect);
             drawText(canvas, endTitleRect, data.get(endIndex).name);
@@ -227,6 +228,9 @@ public class RangeSeekBarView extends View {
             getNinePath(startTitleRect, startTitleBitmap, startIndex).draw(canvas, startTitleRect);
             drawText(canvas, startTitleRect, data.get(startIndex).name);
         } else {
+            //绘制底部游标
+            canvas.drawBitmap(startCurseBitmap, seekBarPadding - startCurseBitmap.getWidth() / 2 + startIndex * getItemWidth(), titleDescHeight + seekBarHeight + seekBarTopPadding + seekBarBottomPadding, null);
+            canvas.drawBitmap(endCurseBitmap, seekBarPadding + endIndex * getItemWidth() - startCurseBitmap.getWidth() / 2, titleDescHeight + seekBarHeight + seekBarTopPadding + seekBarBottomPadding, null);
             //绘制开始描述
             getNinePath(startTitleRect, startTitleBitmap, startIndex).draw(canvas, startTitleRect);
             drawText(canvas, startTitleRect, data.get(startIndex).name);
