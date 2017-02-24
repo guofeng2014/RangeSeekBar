@@ -47,6 +47,8 @@ public class RangeSeekBarView extends View {
 
     private int endIndex;
 
+    private int textPaddingLeftAndRight;
+
 
     public RangeSeekBarView(Context context) {
         this(context, null);
@@ -66,7 +68,11 @@ public class RangeSeekBarView extends View {
         List<LeveBean> data = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             LeveBean leveBean = new LeveBean();
-            leveBean.name = String.valueOf(i);
+            if (i > 10) {
+                leveBean.name = "测试数据" + String.valueOf(i);
+            } else {
+                leveBean.name = String.valueOf(i);
+            }
             data.add(leveBean);
         }
         return data;
@@ -102,6 +108,7 @@ public class RangeSeekBarView extends View {
         seekBarBottomPadding = Utils.dip2px(getContext(), 3);
         titleDecWidth = Utils.dip2px(getContext(), 39);
         titleDescHeight = Utils.dip2px(getContext(), 27);
+        textPaddingLeftAndRight = Utils.dip2px(getContext(), 3);
 
         startCurseBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_cursor);
         endCurseBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_cursor);
@@ -246,6 +253,7 @@ public class RangeSeekBarView extends View {
         return endTitlePath;
     }
 
+
     /**
      * 绘制文字
      *
@@ -254,15 +262,16 @@ public class RangeSeekBarView extends View {
      * @param text   绘制的文字
      */
     private void drawText(Canvas canvas, Rect rect, String text) {
+        //裁切文字在控件范围内
+        int index = textPaint.breakText(text.toCharArray(), 0, text.length(), titleDecWidth - textPaddingLeftAndRight * 2, null);
+        text = text.substring(0, index);
         float width = textPaint.measureText(text);
-        if (width < rect.width()) {
-            float x = rect.left + (rect.width() - width) / 2;
-            Paint.FontMetrics font = textPaint.getFontMetrics();
-            int textHeight = (int) (Math.ceil(font.descent - font.ascent) + 2);
-            float y = (rect.height() - textHeight) / 2 + textHeight - font.bottom;
-            // y是字符baseLine(底线)在屏幕的位置,
-            canvas.drawText(text, x, y, textPaint);
-        }
+        float x = rect.left + (rect.width() - width) / 2;
+        Paint.FontMetrics font = textPaint.getFontMetrics();
+        int textHeight = (int) (Math.ceil(font.descent - font.ascent) + 2);
+        float y = (rect.height() - textHeight) / 2 + textHeight - font.bottom;
+        // y是字符baseLine(底线)在屏幕的位置,
+        canvas.drawText(text, x, y, textPaint);
     }
 
     @Override
