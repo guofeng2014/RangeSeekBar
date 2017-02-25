@@ -10,7 +10,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -203,7 +202,6 @@ public class RangeSeekBarView extends View {
      * 绘制顶部结束描述矩阵范围{左上点坐标,右下点坐标}
      */
     private Rect endTitleRect = new Rect();
-    private static final String TAG = "RangeSeekBarView";
 
     /**
      * 根据下标转化成对应滑动位置
@@ -228,7 +226,6 @@ public class RangeSeekBarView extends View {
             drawText(canvas, endTitleRect, data.get(endIndex).name);
             //绘制开始描述
             getNinePath(startTitleRect, startTitleBitmap, startIndex).draw(canvas, startTitleRect);
-            Log.d(TAG, "refreshView: " + startIndex);
             drawText(canvas, startTitleRect, data.get(startIndex).name);
         } else {
             //绘制底部游标
@@ -285,14 +282,14 @@ public class RangeSeekBarView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                checkMoveDown(event);
+                isTouchInMoveArea = checkMoveDown(event);
                 break;
             case MotionEvent.ACTION_MOVE:
-                onTouchMove(event);
+                if (isTouchInMoveArea) {
+                    onTouchMove(event);
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                finalTouchCursor = touchCursor;
-                touchCursor = TOUCH_NONE_CURSOR;
                 lastTouchX = 0;
                 break;
         }
@@ -307,10 +304,6 @@ public class RangeSeekBarView extends View {
      */
     private int touchCursor = TOUCH_NONE_CURSOR;
     /**
-     * 记录最后一次滑动的游标
-     */
-    private int finalTouchCursor = TOUCH_NONE_CURSOR;
-    /**
      * 当前没有可以操作的游标
      */
     private static final int TOUCH_NONE_CURSOR = -1;
@@ -322,33 +315,36 @@ public class RangeSeekBarView extends View {
      * 当前可以操作或正在操作的游标是结束游标
      */
     private static final int TOUCH_END_CURSOR = 2;
-
+    /**
+     * 是否在可滑动的区域
+     */
+    private boolean isTouchInMoveArea = false;
 
     /**
      * 检测按下事件
      *
      * @param event 触摸事件
      */
-    private void checkMoveDown(MotionEvent event) {
+    private boolean checkMoveDown(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
         lastTouchX = x;
         //如果重合了,保留上次最后滑动的在最上面
         if (startIndex == endIndex) {
             //最后一次滑动的是开始游标
-            if (finalTouchCursor == TOUCH_START_CURSOR) {
-                if (checkIsTouchInStartCursor(x, y)) return;
-            } else if (finalTouchCursor == TOUCH_END_CURSOR) {
+            if (touchCursor == TOUCH_START_CURSOR) {
+                if (checkIsTouchInStartCursor(x, y)) return true;
+            } else if (touchCursor == TOUCH_END_CURSOR) {
                 //最后一次滑动的是结束游标
-                if (checkIsTouchInEndCUrsor(x, y)) return;
+                if (checkIsTouchInEndCUrsor(x, y)) return true;
             }
         }
         //滑动开始游标
-        if (checkIsTouchInStartCursor(x, y)) return;
+        if (checkIsTouchInStartCursor(x, y)) return true;
         //滑动结束游标
-        if (checkIsTouchInEndCUrsor(x, y)) return;
-        //不可以滑动
-        touchCursor = TOUCH_NONE_CURSOR;
+        if (checkIsTouchInEndCUrsor(x, y)) return true;
+
+        return false;
     }
 
     /**
@@ -430,29 +426,6 @@ public class RangeSeekBarView extends View {
         }
     }
 
-    /**
-     * 检测是否可以滑动
-     *
-     * @param scrollDistance 手指滑动的距离
-     * @return
-     */
-    private boolean isTouchOutOfBound(float scrollDistance) {
-        //开始游标只能小于等于结束游标
-        if (startIndex > endIndex) {
-            return true;
-        }
-        //向右边滑动
-        if (scrollDistance > 0) {
-            if (touchCursor == TOUCH_END_CURSOR && greenRect.right == getWidth() - seekBarPadding) {
-                return true;
-            }
-        } else {//向左边滑动
-            if (touchCursor == TOUCH_START_CURSOR && greenRect.left == seekBarPadding) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * 是否触摸在游标处
