@@ -339,12 +339,8 @@ public class RangeSeekBarView extends View {
                 if (checkIsTouchInEndCUrsor(x, y)) return true;
             }
         }
-        //滑动开始游标
-        if (checkIsTouchInStartCursor(x, y)) return true;
         //滑动结束游标
-        if (checkIsTouchInEndCUrsor(x, y)) return true;
-
-        return false;
+        return (checkIsTouchInStartCursor(x, y)) || checkIsTouchInEndCUrsor(x, y);
     }
 
     /**
