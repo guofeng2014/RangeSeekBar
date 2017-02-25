@@ -22,31 +22,57 @@ import java.util.List;
  */
 
 public class RangeSeekBarView extends View {
-
+    /**
+     * 开始游标/结束游标/顶部开始.9描述背景/顶部结束.9描述背景 图片的bitmap对象
+     */
     private Bitmap startCurseBitmap, endCurseBitmap, startTitleBitmap, endTitleBitmap;
-
+    /**
+     * 绘制seekBar选择后颜色画笔
+     */
     private Paint greenPaint;
-
+    /**
+     * 绘制seekBar默认颜色画笔
+     */
     private Paint grayPaint;
-
+    /**
+     * 绘制顶部.9 drawText()画笔
+     */
     private Paint textPaint;
-
+    /**
+     * seekBar的高度
+     */
     private int seekBarHeight;
-
+    /**
+     * 顶部.9图片的高度
+     */
     private int titleDescHeight;
-
+    /**
+     * 顶部.9图片的宽度
+     */
     private int titleDecWidth;
-
+    /**
+     * 数据源集合
+     */
     private List<LeveBean> data;
-
+    /**
+     * seekBar距离顶部描述的距离
+     */
     private int seekBarTopPadding;
-
+    /**
+     * seekBar距离游标的距离
+     */
     private int seekBarBottomPadding;
-
+    /**
+     * 开始游标下标,默认集合的开始index
+     */
     private int startIndex;
-
+    /**
+     * 结束游标的下标,默认集合的结束index
+     */
     private int endIndex;
-
+    /**
+     * 顶部文字距离左边右边的最小间距
+     */
     private int textPaddingLeftAndRight;
 
 
