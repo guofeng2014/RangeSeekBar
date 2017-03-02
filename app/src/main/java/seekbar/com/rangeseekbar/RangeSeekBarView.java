@@ -139,8 +139,8 @@ public class RangeSeekBarView extends View {
         startCurseBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_cursor);
         endCurseBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_cursor);
 
-        startTitleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_title);
-        endTitleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_title);
+        startTitleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_blue_desc);
+        endTitleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_blue_desc);
 
         greenPaint = new Paint();
         greenPaint.setAntiAlias(false);
@@ -197,6 +197,7 @@ public class RangeSeekBarView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (data == null || data.size() <= 1) return;
         refreshView(canvas);
         canvas.drawRoundRect(grayRect, 7, 7, grayPaint);
         canvas.drawRoundRect(greenRect, 7, 7, greenPaint);
